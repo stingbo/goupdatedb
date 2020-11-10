@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path"
 	"sync"
 	"time"
 
@@ -35,8 +36,7 @@ func main() {
 			} else if sql_type == "sqlfile" {
 				sqlfilepath := ""
 				if sql == "" {
-					timestr := time.Now().Format("2006-01-02")
-					sqlfilepath = "sqlfile/supplier_platform_"+timestr+".sql"
+					sqlfilepath = "sqlfile/supplier_platform.sql"
 				} else {
 					sqlfilepath = sql
 				}
@@ -50,6 +50,12 @@ func main() {
 						fmt.Printf("\n")
 						update(sqlstr)
 					}
+					sqlfilenameall := path.Base(sqlfilepath)
+					sqlfileext := path.Ext(sqlfilepath)
+					sqlfilename := sqlfilenameall[0:len(sqlfilenameall) - len(sqlfileext)]
+
+					exafterSqlFile := "sqlfile/"+sqlfilename+"_"+time.Now().Format("2006-01-02_15:04:05")+".sql"
+					os.Rename(sqlfilepath, exafterSqlFile)
 				}
 			}
 			return nil
